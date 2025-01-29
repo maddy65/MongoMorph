@@ -1,2 +1,2 @@
 # MongoMorph
-MongoMorph is a Data Managment tool dor onemind. 
+MongoMorph is a Data Managment tool for onemind. 
