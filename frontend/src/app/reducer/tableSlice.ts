@@ -1,8 +1,7 @@
-// tableSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import {fetchGridData} from "../service/CommonService"
+import { fetchGridData } from "../service/CommonService";
 
+// Define the type for the state of each table
 interface TableDataState {
   [tableKey: string]: {
     data: any[];
@@ -13,6 +12,7 @@ interface TableDataState {
 
 const initialState: TableDataState = {};
 
+// Create the async thunk for fetching table data
 export const fetchTableData = createAsyncThunk(
   "table/fetchTableData",
   async (
@@ -28,6 +28,7 @@ export const fetchTableData = createAsyncThunk(
   }
 );
 
+// Create the table slice
 const tableSlice = createSlice({
   name: "table",
   initialState,
@@ -50,13 +51,16 @@ const tableSlice = createSlice({
       .addCase(fetchTableData.fulfilled, (state, action) => {
         const { tableKey, data } = action.payload;
         state[tableKey].loading = false;
-        state[tableKey].data = action.payload.data;
+        state[tableKey].data = data;
       })
       .addCase(fetchTableData.rejected, (state, action: PayloadAction<any>) => {
-        const { tableKey } = action.meta.arg;
-        state[tableKey].loading = false;
-        state[tableKey].error = action.payload?.error || "Unknown error";
+        // Remove tableKey handling and set a default error state
+        const errorMessage = action.payload?.error || "Unknown error";
+        // If you need to handle a specific table, you can update this part accordingly
+        state.error = errorMessage; // general error handling
+    
       });
+      
   },
 });
 

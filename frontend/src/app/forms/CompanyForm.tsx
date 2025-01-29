@@ -55,7 +55,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ onCancel, onSave, initialData
             if (fetchIndustries.fulfilled.match(resultAction)) {
               const response = resultAction.payload;
               
-              const formattedOptions = response.map((option) => ({
+              const formattedOptions = response.map((option: { _id: { toString: () => any; }; name: any; }) => ({
                 value: option._id.toString(),  
                 label: option.name,            
               }));

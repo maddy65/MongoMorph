@@ -70,7 +70,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ onCancel, onSave, initialDa
         setFormData((prevData) => ({
           ...prevData,
           ...initialData,
-          product: Array.isArray(initialData.product) ? initialData.product.map((prod) => prod._id) : [], // Ensure product is an array
+          product: Array.isArray(initialData.product) ? initialData.product.map((prod: { _id: any; }) => prod._id) : [], // Ensure product is an array
           industry: initialData.industry._id || "",
         }));
       }
@@ -92,7 +92,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ onCancel, onSave, initialDa
               const response = resultAction.payload;
               
               const formattedOptions = response.map((option) => ({
-                value: option._id.toString(),  
+                value: option.name,  
                 label: option.name,            
               }));
               setProductOptions(formattedOptions);
@@ -113,8 +113,8 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ onCancel, onSave, initialDa
             if (fetchIndustries.fulfilled.match(resultAction)) {
               const response = resultAction.payload;
               
-              const formattedOptions = response.map((option) => ({
-                value: option._id.toString(),  
+              const formattedOptions = response.map((option: { _id: { toString: () => any; }; name: any; }) => ({
+                value: option?._id.toString(),  
                 label: option.name,            
               }));
               setIndustryOptions(formattedOptions);
@@ -207,7 +207,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ onCancel, onSave, initialDa
   <label className="block font-medium mb-1">Product</label>
   
   {/* Product Dropdown */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <Select
             isMulti
             name="product"
@@ -223,7 +223,9 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ onCancel, onSave, initialDa
             classNamePrefix="select"
             placeholder="Select Product"
           />
-        </div>
+        </div> */}
+
+        
 
         {/* New Product Input */}
         <div className="flex flex-wrap gap-4">

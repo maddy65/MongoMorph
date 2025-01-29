@@ -17,7 +17,6 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = ({ headers, apiUrl, onEdit,setSelectedRowData  }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [rows, setRows] = useState([]);
   const { data, loading, error } = useSelector(
     (state: RootState) => state.table[apiUrl] || { data: [], loading: false, error: null }
   );
@@ -30,11 +29,7 @@ const Table: React.FC<TableProps> = ({ headers, apiUrl, onEdit,setSelectedRowDat
       dispatch(resetTableData(apiUrl));
     };
   }, [apiUrl, dispatch]);
-
-  const handleEditClick = (row) => {
-    onEdit(row);
-  };
-
+  
   const getNestedValue = (row: any, field: string) => {
     const keys = field.split(".");
     let value = row;
@@ -53,34 +48,15 @@ const Table: React.FC<TableProps> = ({ headers, apiUrl, onEdit,setSelectedRowDat
     return value || "—";
   };
 
-  /* const toggleSelectRow = (rowId: string, rowData: any) => {
-    setSelectedRows((prevSelectedRows) => {
-      if (prevSelectedRows[rowId]) {
-        // If the row is already selected, deselect it
-        const updatedSelection = { ...prevSelectedRows };
-        delete updatedSelection[rowId];
-        setSelectedRowData(null); // Clear the selected row data
-        return updatedSelection;
-      } else {
-        // Otherwise, select the row
-        setSelectedRowData(rowData);
-        return { [rowId]: true }; // Ensure only one row is selected at a time
-      }
-    });
-  }; */
 
   const toggleSelectRow = (rowId: string, rowData: any) => {
     setSelectedRows((prevSelectedRows) => {
       if (prevSelectedRows[rowId]) {
-        // Deselect the row
         const updatedSelection = { ...prevSelectedRows };
         delete updatedSelection[rowId];
-        // Use a callback to update parent state
         setTimeout(() => setSelectedRowData(null), 0);
         return updatedSelection;
       } else {
-        // Select the row
-        // Use a callback to update parent state
         setTimeout(() => setSelectedRowData(rowData), 0);
         return { [rowId]: true }; // Ensure only one row is selected at a time
       }

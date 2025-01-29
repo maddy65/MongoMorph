@@ -15,10 +15,12 @@ type ProjectFormProps = {
   initialData?: any;
 };
 
+
+
 const PersonForm: React.FC<ProjectFormProps> = ({ onCancel, onSave, initialData }) => {
   
   const dispatch = useDispatch<AppDispatch>();  
-  const [companyOptions, setcompanyOptions] = useState<{ value: string; label: string }[]>([]);
+  const [companyOptions, setcompanyOptions] = useState<{ value: string; label: string , cin: string}[]>([]);
   const [industryOptions, setIndustryOptions] = useState<{ value: string; label: string }[]>([]);
   
   const [formData, setFormData] = useState({
@@ -89,7 +91,7 @@ const PersonForm: React.FC<ProjectFormProps> = ({ onCancel, onSave, initialData 
               if (fetchIndustries.fulfilled.match(resultAction)) {
                 const response = resultAction.payload;
                 
-                const formattedOptions = response.map((option) => ({
+                const formattedOptions = response.map((option: { _id: { toString: () => any; }; name: any; }) => ({
                   value: option._id.toString(),  
                   label: option.name,            
                 }));
@@ -140,8 +142,10 @@ const PersonForm: React.FC<ProjectFormProps> = ({ onCancel, onSave, initialData 
               options={companyOptions}
               value={companyOptions.find((option) => option.value === formData.companyName) || null}
               onChange={(selectedOption) => {
-                setFormData({ ...formData, companyName: selectedOption?.value || "", cin:selectedOption?.cin || "maddy"  });
+                setFormData({ ...formData, companyName: selectedOption?.value || "", cin:selectedOption?.cin || ""  });
               }}
+           
+
               className="basic-single-select"
               classNamePrefix="select"
               placeholder="Select Company"
