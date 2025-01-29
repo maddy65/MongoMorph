@@ -25,9 +25,7 @@ jobs:
         run: npm run build
         working-directory: frontend 
 
-      - name: Export Next.js app
-        run: npm run export
-        working-directory: frontend 
+      
 
    
 
