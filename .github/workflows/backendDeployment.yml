@@ -30,8 +30,8 @@ jobs:
 
       - name: Update ECS Task Definition
         run: |
-          sed -i "s|<IMAGE_PLACEHOLDER>|${{ secrets.ECR_REPOSITORY_ONEMIND }}:latest|g" backend/task-defination/ecsTask.json.json
-          aws ecs register-task-definition --cli-input-json file://backend/task-defination/ecsTask.json
+          sed -i "s|<IMAGE_PLACEHOLDER>|${{ secrets.ECR_REPOSITORY_ONEMIND }}:latest|g" task-defination/ecsTask.json
+          aws ecs register-task-definition --cli-input-json file://task-defination/ecsTask.json
 
 
       - name: Deploy to ECS
