@@ -20,8 +20,15 @@ import { deleteProject } from "./reducer/ProjectSlice";
 // Define the tabs and their corresponding headers and API URLs
 const tabs = ["Supplier", "Project", "Person", "Company"];
 
+type TabConfig = {
+  [key: string]: {
+    headers: { label: string; field: string }[];
+    apiUrl: string;
+  };
+};
 
-const tabConfig = {
+
+const tabConfig: TabConfig = {
   Supplier: {
     headers: [
       { label: "Supplier Name", field: "supplierName" },

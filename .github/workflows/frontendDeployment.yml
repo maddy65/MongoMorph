@@ -1,4 +1,4 @@
-name: Deploy Frontend to S3
+name: Deploy OE Frontend to S3
 on:
   workflow_dispatch:  # Manual trigger
 
@@ -8,20 +8,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Navigate to frontend directory
         run: cd frontend
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22'
+          node-version: '18'
+
       - name: Install dependencies
         run: npm install
+        working-directory: frontend
+
       - name: Build project
         run: npm run build
+        working-directory: frontend 
+
+      
+
+   
+
       - name: Deploy to S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ap-south-1
         run: |
-          aws s3 sync .next/ s3://onemind --delete
+          aws s3 sync ./frontend/out s3://onemind --delete
