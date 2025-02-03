@@ -1,0 +1,38 @@
+name: Deploy Backend to AWS ECS
+on:
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_ONEMIND }}
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_TAG=latest
+          docker build -t ${{ secrets.ECR_REPOSITORY_ONEMIND }}:$IMAGE_TAG .
+          docker tag ${{ secrets.ECR_REPOSITORY_ONEMIND }}:$IMAGE_TAG ${{ secrets.ECR_REPOSITORY_ONEMIND }}:$IMAGE_TAG
+          docker push ${{ secrets.ECR_REPOSITORY_ONEMIND }}:$IMAGE_TAG
+
+      - name: Update ECS Task Definition
+        run: |
+          sed -i "s|<IMAGE_PLACEHOLDER>|${{ secrets.ECR_REPOSITORY_ONEMIND }}:latest|g" ecs-task-definition.json
+          aws ecs register-task-definition --cli-input-json file://task-definition.json
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ${{ secrets.ECS_SERVICE_NAME }} --force-new-deployment
